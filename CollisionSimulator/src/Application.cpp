@@ -1,10 +1,10 @@
 #include "Application.h"
 
-#include "Window.h"
-
 #include <memory>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include "Window.h"
 
 int Application::Start()
 {

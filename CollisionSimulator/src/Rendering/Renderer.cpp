@@ -4,12 +4,10 @@
 #include <GLFW/glfw3.h>
 
 #include "../Application.h"
-#include "../Game/SceneManager.h"
 #include "VertexBufferLayout.h"
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
-#include "../ECS/TransformComponent.h"
 
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)
