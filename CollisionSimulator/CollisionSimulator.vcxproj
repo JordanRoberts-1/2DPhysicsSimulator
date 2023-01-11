@@ -19,24 +19,32 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ECS.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Application.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Rendering\IndexBuffer.cpp" />
     <ClCompile Include="src\Rendering\Renderer.cpp" />
     <ClCompile Include="src\Rendering\Shader.cpp" />
-    <ClCompile Include="src\Rendering\Texture.cpp" />
     <ClCompile Include="src\Rendering\VertexArray.cpp" />
     <ClCompile Include="src\Rendering\VertexBuffer.cpp" />
+    <ClCompile Include="src\Util\Input.cpp" />
+    <ClCompile Include="src\Util\Random.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ECS.h" />
+    <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Application.h" />
     <ClInclude Include="src\Rendering\IndexBuffer.h" />
     <ClInclude Include="src\Rendering\Renderer.h" />
     <ClInclude Include="src\Rendering\Shader.h" />
-    <ClInclude Include="src\Rendering\Texture.h" />
     <ClInclude Include="src\Rendering\VertexArray.h" />
     <ClInclude Include="src\Rendering\VertexBuffer.h" />
     <ClInclude Include="src\Rendering\VertexBufferLayout.h" />
+    <ClInclude Include="src\Util\Clock.h" />
+    <ClInclude Include="src\Util\Debug.h" />
+    <ClInclude Include="src\Util\Input.h" />
+    <ClInclude Include="src\Util\Random.h" />
     <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
