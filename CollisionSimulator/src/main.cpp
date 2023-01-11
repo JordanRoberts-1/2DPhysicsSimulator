@@ -2,5 +2,6 @@
 
 int main()
 {
-    return Application::Start();
+    Application app;
+    app.Start();
 }

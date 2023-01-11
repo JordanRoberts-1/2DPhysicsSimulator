@@ -22,6 +22,15 @@
     <ClCompile Include="src\Util\Input.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\ECS.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_demo.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_draw.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_impl_glfw.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_stdlib.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_tables.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_widgets.cpp" />
+    <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window.h">
@@ -66,5 +75,38 @@
     <ClInclude Include="src\ECS.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imgui_impl_glfw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imgui_impl_opengl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imgui_stdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imstb_rectpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imstb_textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\ImGUI\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Shaders\Basic.glsl" />
   </ItemGroup>
 </Project>

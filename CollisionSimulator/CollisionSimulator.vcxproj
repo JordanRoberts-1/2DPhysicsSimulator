@@ -28,8 +28,17 @@
     <ClCompile Include="src\Rendering\Shader.cpp" />
     <ClCompile Include="src\Rendering\VertexArray.cpp" />
     <ClCompile Include="src\Rendering\VertexBuffer.cpp" />
+    <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Util\Input.cpp" />
     <ClCompile Include="src\Util\Random.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_demo.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_draw.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_impl_glfw.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_stdlib.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_tables.cpp" />
+    <ClCompile Include="vendor\ImGUI\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ECS.h" />
@@ -46,6 +55,19 @@
     <ClInclude Include="src\Util\Input.h" />
     <ClInclude Include="src\Util\Random.h" />
     <ClInclude Include="src\Window.h" />
+    <ClInclude Include="vendor\ImGUI\imconfig.h" />
+    <ClInclude Include="vendor\ImGUI\imgui.h" />
+    <ClInclude Include="vendor\ImGUI\imgui_impl_glfw.h" />
+    <ClInclude Include="vendor\ImGUI\imgui_impl_opengl3.h" />
+    <ClInclude Include="vendor\ImGUI\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="vendor\ImGUI\imgui_internal.h" />
+    <ClInclude Include="vendor\ImGUI\imgui_stdlib.h" />
+    <ClInclude Include="vendor\ImGUI\imstb_rectpack.h" />
+    <ClInclude Include="vendor\ImGUI\imstb_textedit.h" />
+    <ClInclude Include="vendor\ImGUI\imstb_truetype.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Shaders\Basic.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

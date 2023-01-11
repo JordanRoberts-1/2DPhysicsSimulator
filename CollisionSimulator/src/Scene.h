@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <glm/glm.hpp>
 
-#include "ECS.h"
+using Tag = uint32_t;
 
 class SceneManager
 {

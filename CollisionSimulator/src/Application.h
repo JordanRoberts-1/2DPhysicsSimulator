@@ -1,15 +1,16 @@
 #pragma once
 #include <memory>
+#include "Rendering/Renderer.h"
 
 class Window;
-class GLFWwindow;
+struct GLFWwindow;
 
 class Application
 {
 public:
-	static int Start();
-private:
-	static std::unique_ptr<Window> Setup();
-	static void Run(GLFWwindow* window);
-	static void Cleanup();
+	int Start();
+	std::unique_ptr<Window> Setup();
+	void Run(Window* window, Renderer renderer);
+	void Cleanup();
 };
+

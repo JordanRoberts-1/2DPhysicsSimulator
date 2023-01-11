@@ -3,11 +3,11 @@
 #include "Renderer.h"
 
 //Constructor
-VertexBuffer::VertexBuffer(const void* data, unsigned int size)
+VertexBuffer::VertexBuffer(unsigned int size)
 {
-	glGenBuffers(1, &m_RendererID); //Create a new buffer with and set this VertexBuffer's id to that newly created buffer
+	glCreateBuffers(1, &m_RendererID); //Create a new buffer with and set this VertexBuffer's id to that newly created buffer
 	Bind(); //Bind this vertex buffer
-	glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW); //Actually create and assign the data to the buffer
+	glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW); //Actually create and assign the data to the buffer
 }
 
 VertexBuffer::~VertexBuffer()
@@ -23,4 +23,9 @@ void VertexBuffer::Bind() const
 void VertexBuffer::Unbind() const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, 0); //Unbind this VertexBuffer
+}
+
+void VertexBuffer::SetBuffer(const float* data, uint32_t size)
+{
+	glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
 }

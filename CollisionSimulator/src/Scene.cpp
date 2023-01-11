@@ -1,5 +1,8 @@
 #include "Scene.h"
+
 #include <iostream>
+
+#include "ECS.h"
 
 void SceneManager::CreateScene()
 {
@@ -18,7 +21,7 @@ void SceneManager::AddEntity(Tag tag)
 	}
 
 	AppData::tags[currentId] = tag;
-	AppData::positions[currentId] = glm::vec3((float)currentId);
+	AppData::positions[currentId] = glm::vec3((float)currentId) / 1000.0f;
 
 	currentId++;
 }
