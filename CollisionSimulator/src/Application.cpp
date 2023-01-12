@@ -28,6 +28,8 @@ int Application::Start()
 	SceneManager sc;
 	sc.CreateScene();
 
+	glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+
 	Run(window.get(), renderer);
 	Cleanup();
 
@@ -57,17 +59,15 @@ std::unique_ptr<Window> Application::Setup()
 	//Print out the version of OpenGL to the console
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
-	//ImGui::CreateContext();
-	//ImGui_ImplGlfw_InitForOpenGL(window->getGLFWWindow(), true);
-	//ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+	ImGui::CreateContext();
+	ImGui_ImplGlfw_InitForOpenGL(window->getGLFWWindow(), true);
+	ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
-	//ImGui::StyleColorsDark();
+	ImGui::StyleColorsDark();
 
 	Debug::SetupDebug();
 

@@ -48,8 +48,8 @@ void Renderer::Clear()
 
 void Renderer::RenderGUI()
 {
-	//ImGui::Render();
-	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Renderer::Render(Window* window)
@@ -145,9 +145,9 @@ void Renderer::ClearRendering()
 	/* Render here */
 	Renderer::Clear();
 
-	//ImGui_ImplOpenGL3_NewFrame();
-	//ImGui_ImplGlfw_NewFrame();
-	//ImGui::NewFrame();
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
 }
 
 std::vector<unsigned int> Renderer::BuildIndexBuffer(int numQuads)
