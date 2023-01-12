@@ -107,7 +107,7 @@ void Renderer::RenderGeometry(Window* window)
 void Renderer::CreateRenderingUI(double frametime)
 {
 	ImGui::Begin("Rendering Stats");
-	ImGui::Text("Frametime: %f", frametime);
+	ImGui::Text("Frametime: %fms", frametime);
 	ImGui::Text("Number of vertices: %d", m_Vertices.size());
 	ImGui::Text("Number of Indices: %d", m_Indices.size());
 	ImGui::Text("Number of MVP matrices: %d", m_MVPMatrices.size());

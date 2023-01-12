@@ -112,5 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Shaders\Basic.glsl" />
+    <None Include="imgui.ini" />
   </ItemGroup>
 </Project>
