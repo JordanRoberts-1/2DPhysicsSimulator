@@ -25,8 +25,8 @@ void IndexBuffer::Unbind() const
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); //Bind the above buffer ID to an Array buffer. This is what is going to be drawn in the next draw call.
 }
 
-void IndexBuffer::SetBuffer(const unsigned int* data, uint32_t size)
+void IndexBuffer::SetBuffer(const unsigned int* data, uint32_t count)
 {
 	Bind();
-	glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+	glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, count * sizeof(unsigned int), data);
 }

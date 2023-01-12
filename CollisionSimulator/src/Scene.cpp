@@ -8,7 +8,7 @@ void SceneManager::CreateScene()
 {
 	for (size_t i = 0; i < 100; i++)
 	{
-		AddEntity(CompTags::Position | CompTags::Velocity | CompTags::Collider);
+		AddEntity(CompTags::Position | CompTags::Velocity | CompTags::Collider | CompTags::Renderable);
 	}
 }
 
@@ -21,7 +21,8 @@ void SceneManager::AddEntity(Tag tag)
 	}
 
 	AppData::tags[currentId] = tag;
-	AppData::positions[currentId] = glm::vec3((float)currentId) / 1000.0f;
+	AppData::positions[currentId] = glm::vec3(-1.0f) + glm::vec3(currentId/100.0f);
+	AppData::renderables[currentId].color = glm::vec4(0.0f + 0.01f * currentId);
 
 	currentId++;
 }

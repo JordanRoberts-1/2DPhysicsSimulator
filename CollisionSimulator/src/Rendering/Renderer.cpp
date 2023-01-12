@@ -15,29 +15,30 @@
 
 
 Renderer::Renderer()
-	: vb(sizeof(Vertex) * 4000), ib(sizeof(int) * 6000), shader("res/Shaders/Basic.glsl")
+	: vb(400), ib(600), shader("res/Shaders/Basic.glsl"), vao()
 {
 }
 
 void Renderer::AllocateBuffers()
 {
-	vao.Bind();
-
 	VertexBufferLayout vbLayout = VertexBufferLayout();
-	vbLayout.Push<float>(2);
-	vbLayout.Push<float>(2);
+	vbLayout.Push<float>(3);
+	vbLayout.Push<float>(4);
 
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+	vb.Bind();
 	vao.AddBuffer(vb, vbLayout);
 }
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)
 {
 	//Bind all of the buffers and stuff
-	//shader.Bind();
+	shader.Bind();
 	va.Bind();
 	ib.Bind();
 
-	glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, 600, GL_UNSIGNED_INT, nullptr);
 }
 
 void Renderer::Clear()
@@ -47,8 +48,8 @@ void Renderer::Clear()
 
 void Renderer::RenderGUI()
 {
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	//ImGui::Render();
+	//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void Renderer::Render(Window* window)
@@ -74,22 +75,36 @@ void Renderer::RenderGeometry(Window* window)
 	{
 		if ((AppData::tags[e] & rqdTags) != rqdTags) { continue; }
 
-		Vertex current = {
+		Vertex first, second, third, fourth;
+
+		first = {
 		AppData::positions[e],
+		AppData::renderables[e].color };		
+		second = {
+		AppData::positions[e] + glm::vec3(1.0f, 0.0f, 0.0f),
+		AppData::renderables[e].color };		
+		third = {
+		AppData::positions[e] + glm::vec3(1.0f, 1.0f, 0.0f),
+		AppData::renderables[e].color };		
+		fourth = {
+		AppData::positions[e] + glm::vec3(0.0f, 1.0f, 0.0f),
 		AppData::renderables[e].color };
 
 		entityCount++;
 
-		vertices.push_back(current);
+		vertices.push_back(first);
+		vertices.push_back(second);
+		vertices.push_back(third);
+		vertices.push_back(fourth);
 	}
 
 	std::vector<unsigned int> indices = BuildIndexBuffer(entityCount);
 
 	ib.Bind();
-	ib.SetBuffer(&indices[0], indices.size() * 6);
+	ib.SetBuffer(&indices[0], indices.size());
 
 	vb.Bind();
-	vb.SetBuffer((float*) & vertices[0], vertices.size() * sizeof(Vertex));
+	vb.SetBuffer((float*) & vertices[0], vertices.size());
 
 	Draw(vao, ib, shader);
 
@@ -130,9 +145,9 @@ void Renderer::ClearRendering()
 	/* Render here */
 	Renderer::Clear();
 
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
+	//ImGui_ImplOpenGL3_NewFrame();
+	//ImGui_ImplGlfw_NewFrame();
+	//ImGui::NewFrame();
 }
 
 std::vector<unsigned int> Renderer::BuildIndexBuffer(int numQuads)
@@ -141,13 +156,13 @@ std::vector<unsigned int> Renderer::BuildIndexBuffer(int numQuads)
 	buffer.reserve(numQuads * 6);
 	for (uint32_t i = 0; i < numQuads; i++)
 	{
-		buffer[i * 4] = i * 4;
-		buffer[i * 4 + 1] = i * 4 + 1;
-		buffer[i * 4 + 2] = i * 4 + 2;
+		buffer.emplace_back(i*4);
+		buffer.emplace_back(i*4+1);
+		buffer.emplace_back(i*4+2);
 
-		buffer[i * 4 + 2] = i * 4 + 2;
-		buffer[i * 4 + 3] = i * 4 + 3;
-		buffer[i * 4] = i * 4;
+		buffer.emplace_back(i*4+2);
+		buffer.emplace_back(i*4+3);
+		buffer.emplace_back(i*4);
 	}
 
 	return buffer;
