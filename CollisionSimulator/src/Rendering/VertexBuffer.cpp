@@ -1,8 +1,8 @@
 #pragma once
 #include "VertexBuffer.h"
+
 #include "Renderer.h"
 
-//Constructor
 VertexBuffer::VertexBuffer(unsigned int count)
 {
 	glCreateBuffers(1, &m_RendererID); //Create a new buffer with and set this VertexBuffer's id to that newly created buffer

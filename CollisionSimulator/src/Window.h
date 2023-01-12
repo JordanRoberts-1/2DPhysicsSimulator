@@ -7,10 +7,10 @@ class Window
 {
 public:
 	Window(const std::string& title, float windowWidth, float windowHeight);
-    GLFWwindow* getGLFWWindow() const { return glfwWindow; };
+    GLFWwindow* getGLFWWindow() const { return m_GlfwWindow; };
     inline float getWindowWidth() const { return w; }
     inline float getWindowHeight() const { return h; }
 private:
-    GLFWwindow* glfwWindow;
+    GLFWwindow* m_GlfwWindow;
     float w, h;
 };

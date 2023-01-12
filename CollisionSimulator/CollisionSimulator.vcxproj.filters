@@ -31,6 +31,7 @@
     <ClCompile Include="vendor\ImGUI\imgui_tables.cpp" />
     <ClCompile Include="vendor\ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="src\Window.cpp" />
+    <ClCompile Include="src\Rendering\ShaderStorageBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window.h">
@@ -103,6 +104,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\ImGUI\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rendering\ShaderStorageBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

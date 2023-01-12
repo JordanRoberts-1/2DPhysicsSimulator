@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Rendering\ShaderStorageBuffer.cpp" />
     <ClCompile Include="src\ECS.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="vendor\ImGUI\imgui_widgets.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Rendering\ShaderStorageBuffer.h" />
     <ClInclude Include="src\ECS.h" />
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\Application.h" />

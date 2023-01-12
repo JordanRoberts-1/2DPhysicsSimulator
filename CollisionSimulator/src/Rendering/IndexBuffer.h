@@ -9,7 +9,7 @@ public:
 	void Bind() const;
 	void Unbind() const;
 
-	void SetBuffer(const unsigned int* data, uint32_t size);
+	void SetBuffer(const unsigned int* data, uint32_t count);
 
 	inline unsigned int GetCount() const { return m_Count; }
 private:

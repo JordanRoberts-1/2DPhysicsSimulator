@@ -2,152 +2,169 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
+
 #include "../ECS.h"
-#include "VertexBufferLayout.h"
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
 #include "../Window.h"
-
-
+#include "VertexBufferLayout.h"
 
 Renderer::Renderer()
-	: vb(400), ib(600), shader("res/Shaders/Basic.glsl"), vao()
 {
+	m_Vao = std::make_unique<VertexArray>();
+	m_Vb = std::make_unique<VertexBuffer>(MAX_ENTS * 4);
+	m_Ib = std::make_unique<IndexBuffer>(MAX_ENTS * 6);
+	m_Shader = std::make_unique<Shader>("res/Shaders/Basic.glsl");
+
+	m_Vao->Bind();
+	m_Ssbo = std::make_unique<ShaderStorageBuffer>(MAX_ENTS * sizeof(glm::mat4));
+
+	m_Vertices.reserve(MAX_ENTS * 4);
+	m_MVPMatrices.reserve(MAX_ENTS);
+	m_Indices.reserve(MAX_ENTS * 6);
 }
 
-void Renderer::AllocateBuffers()
+void Renderer::SetLayout()
 {
-	VertexBufferLayout vbLayout = VertexBufferLayout();
-	vbLayout.Push<float>(3);
-	vbLayout.Push<float>(4);
+	VertexBufferLayout m_VbLayout = VertexBufferLayout();
+	m_VbLayout.Push<float>(2);
+	m_VbLayout.Push<float>(4);
+	m_VbLayout.Push<float>(1);
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-	vb.Bind();
-	vao.AddBuffer(vb, vbLayout);
+	m_Vb->Bind();
+	m_Vao->AddBuffer(*m_Vb, m_VbLayout);
 }
 
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)
+void Renderer::Draw(uint32_t numEntities)
 {
 	//Bind all of the buffers and stuff
-	shader.Bind();
-	va.Bind();
-	ib.Bind();
+	m_Ssbo->Bind();
+	m_Shader->Bind();
+	m_Vao->Bind();
+	m_Ib->Bind();
 
-	glDrawElements(GL_TRIANGLES, 600, GL_UNSIGNED_INT, nullptr);
+	//Draw the number of entities * 6 indices
+	glDrawElements(GL_TRIANGLES, numEntities * 6, GL_UNSIGNED_INT, nullptr);
 }
 
 void Renderer::Clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-}
 
-void Renderer::RenderGUI()
-{
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
 }
 
 void Renderer::Render(Window* window)
 {
-	Renderer::RenderGeometry(window);
-
-	Renderer::RenderGUI();
+	RenderGeometry(window);
+	RenderUI();
 
 	glfwSwapBuffers(window->getGLFWWindow());
 }
 
 void Renderer::RenderGeometry(Window* window)
 {
-	constexpr Tag rqdTags = CompTags::Position | CompTags::Renderable;
+	//Tags required for this system
+	constexpr Tag rqdTags = CompTags::Position | CompTags::Scale | CompTags::Rotation | CompTags::Renderable;
 
-	std::vector<Vertex> vertices;
+	//The cpu side buffers get cleared for a new frame
+	m_Vertices.clear();
+	m_MVPMatrices.clear();
+	m_Indices.clear();
 
-	glm::mat4 proj = glm::ortho(0.0f, window->getWindowWidth(), 0.0f, window->getWindowHeight(), -1.0f, 1.0f);
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
-
-	int entityCount = 0;
-	for (Entity e = 0; e < MAX_ENTS; e++)
+	//Set up the View and Projection matrices
+	glm::mat4 proj = glm::ortho(-window->getWindowHeight(), window->getWindowHeight(), -window->getWindowWidth(), window->getWindowHeight(), -1.0f, 1.0f);
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f));
+	
+	//Loop through each entity and add them to cpu-side vertex buffer
+	int renderableCount = 0;
+	for (Entity e = 0; e < AppData::numEntities; e++)
 	{
-		if ((AppData::tags[e] & rqdTags) != rqdTags) { continue; }
+		if ((AppData::tags[e] & rqdTags) != rqdTags) 
+			continue;
 
-		Vertex first, second, third, fourth;
+		//Add the current MVP matrix to the cpu-side Shader Storage Buffer Object
+		m_MVPMatrices.push_back(CreateMVP(e, proj, view));
 
-		first = {
-		AppData::positions[e],
-		AppData::renderables[e].color };		
-		second = {
-		AppData::positions[e] + glm::vec3(1.0f, 0.0f, 0.0f),
-		AppData::renderables[e].color };		
-		third = {
-		AppData::positions[e] + glm::vec3(1.0f, 1.0f, 0.0f),
-		AppData::renderables[e].color };		
-		fourth = {
-		AppData::positions[e] + glm::vec3(0.0f, 1.0f, 0.0f),
-		AppData::renderables[e].color };
+		//Add the vertices
+		std::array<Vertex, 4> objectVertices = CreateVertices(e);
+		m_Vertices.insert(m_Vertices.begin(), objectVertices.begin(), objectVertices.end());
 
-		entityCount++;
-
-		vertices.push_back(first);
-		vertices.push_back(second);
-		vertices.push_back(third);
-		vertices.push_back(fourth);
+		renderableCount++;
 	}
 
-	std::vector<unsigned int> indices = BuildIndexBuffer(entityCount);
+	//Build the cpu-side index buffer
+	m_Indices = BuildIndexBuffer(renderableCount);
 
-	ib.Bind();
-	ib.SetBuffer(&indices[0], indices.size());
+	//upload the data to the gpu-side buffers
+	SetBuffers(m_Indices, m_Vertices, m_MVPMatrices);
 
-	vb.Bind();
-	vb.SetBuffer((float*) & vertices[0], vertices.size());
-
-	Draw(vao, ib, shader);
-
-
-	//SceneManager& sc = SceneManager::GetInstance();
-	//const std::vector<std::unique_ptr<Entity>>& objects = sc.GetObjects();
-
-	////Get Prepped for the MVP matrix
-	//const Application& app = Application::GetInstance();
-
-	//IndexBuffer ib(QUAD_INDICES, 6);
-
-
-	////Loop through and render each object in a separate draw call
-	//for (const std::unique_ptr<Entity>& object : objects)
-	//{
-	//	const float* vertices = m_EntityVertices;
-	//	VertexBuffer vb(vertices, NUM_VERTICES * sizeof(float));
-
-	//	vb.Bind();
-	//	vao.AddBuffer(vb, vbLayout);
-
-	//	TransformComponent* tc = object->GetTransform();
-	//	glm::vec3 pos = tc->GetPosition();
-	//	glm::vec3 scale = glm::vec3(tc->GetScaledSize(), 1.0f);
-
-	//	//Setup the MVP matrix from each objects position, scale, rotation, etc...
-	//	glm::mat4 transMatrix = glm::translate(glm::mat4(1.0f), pos);
-	//	glm::mat4 model = glm::scale(transMatrix, scale);
-	//	glm::mat4 mvp = proj * view * model;
-
-	//	Renderer::Draw(vao, ib, *shader);
-	//}
+	Draw(renderableCount);
 }
 
-void Renderer::ClearRendering()
+void Renderer::CreateRenderingUI(double frametime)
 {
-	/* Render here */
-	Renderer::Clear();
+	ImGui::Begin("Rendering Stats");
+	ImGui::Text("Frametime: %f", frametime);
+	ImGui::Text("Number of vertices: %d", m_Vertices.size());
+	ImGui::Text("Number of Indices: %d", m_Indices.size());
+	ImGui::Text("Number of MVP matrices: %d", m_MVPMatrices.size());
+	ImGui::End();
+}
 
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
+void Renderer::RenderUI()
+{
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Renderer::SetBuffers(std::vector<unsigned int>& indices, std::vector<Vertex>& vertices, std::vector<glm::mat4>& mvpMatrices)
+{
+	m_Ib->Bind();
+	m_Ib->SetBuffer(&indices[0], indices.size());
+
+	m_Vb->Bind();
+	m_Vb->SetBuffer((float*)&vertices[0], vertices.size());
+
+	m_Ssbo->Bind();
+	m_Ssbo->SetBuffer((float*)&mvpMatrices[0], mvpMatrices.size() * sizeof(glm::mat4));
+}
+
+std::array<Vertex, 4> Renderer::CreateVertices(const Entity& e)
+{
+	std::array<Vertex, 4> result;
+	result[0] = {
+		glm::vec2(0.0f, 0.0f),
+		AppData::renderables[e].color,
+		(float)e };
+	result[1] = {
+		glm::vec2(1.0f, 0.0f),
+		AppData::renderables[e].color,
+		(float)e };
+	result[2] = {
+		glm::vec2(1.0f, 1.0f),
+		AppData::renderables[e].color,
+		(float)e };
+	result[3] = {
+		glm::vec2(0.0f, 1.0f),
+		AppData::renderables[e].color,
+		(float)e };
+	return result;
+}
+
+glm::mat4 Renderer::CreateMVP(const Entity& e, glm::mat4& proj, glm::mat4& view)
+{
+	glm::vec2 pos = AppData::positions[e];
+	glm::vec2 scale = AppData::scales[e];
+	float rotation = AppData::rotations[e];
+
+	glm::mat4 transMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos, 1.0f));
+	glm::mat4 model = glm::scale(transMatrix, glm::vec3(scale, 1.0f));
+	model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	return proj * view * model;
 }
 
 std::vector<unsigned int> Renderer::BuildIndexBuffer(int numQuads)
