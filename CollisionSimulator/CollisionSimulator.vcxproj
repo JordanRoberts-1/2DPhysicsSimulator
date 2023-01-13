@@ -29,6 +29,7 @@
     <ClCompile Include="src\Rendering\Shader.cpp" />
     <ClCompile Include="src\Rendering\VertexArray.cpp" />
     <ClCompile Include="src\Rendering\VertexBuffer.cpp" />
+    <ClCompile Include="src\Collision.h" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Util\Input.cpp" />
     <ClCompile Include="src\Util\Random.cpp" />

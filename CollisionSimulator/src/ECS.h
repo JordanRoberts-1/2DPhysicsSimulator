@@ -11,8 +11,9 @@ using Scale = glm::vec2;
 using Rotation = float;
 struct Collider
 {
-	glm::vec2 start;
-	glm::vec2 end;
+	enum Type {BOX, CIRCLE};
+	Type type;
+	float radius;
 };
 struct Renderable
 {
@@ -57,5 +58,6 @@ namespace AppData
 
 namespace Systems{
 	void ProcessKinematics();
+	void ProcessCollisionDetection();
 }
 

@@ -122,6 +122,7 @@ void Application::Run(Window* window, Renderer* renderer)
 void Application::Update()
 {
 	Systems::ProcessKinematics();
+	Systems::ProcessCollisionDetection();
 }
 
 void Application::Cleanup()

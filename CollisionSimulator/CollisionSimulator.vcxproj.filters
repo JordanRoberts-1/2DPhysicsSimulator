@@ -32,6 +32,7 @@
     <ClCompile Include="vendor\ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="src\Window.cpp" />
     <ClCompile Include="src\Rendering\ShaderStorageBuffer.cpp" />
+    <ClCompile Include="src\Collision.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Window.h">

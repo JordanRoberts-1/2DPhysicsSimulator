@@ -17,6 +17,4 @@ namespace Systems
 			p += velocity;
 		}
 	}
-		}
-	}
 }
