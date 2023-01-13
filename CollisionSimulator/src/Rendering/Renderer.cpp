@@ -160,9 +160,10 @@ glm::mat4 Renderer::CreateMVP(const Entity& e, glm::mat4& proj, glm::mat4& view)
 	glm::vec2 scale = AppData::scales[e];
 	float rotation = AppData::rotations[e];
 
-	glm::mat4 transMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(pos, 1.0f) - glm::vec3(scale.x/2.0f, scale.y/2.0f, 0.0f));
-	glm::mat4 model = glm::scale(transMatrix, glm::vec3(scale, 1.0f));
-	model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 model(1.0f);
+	model = glm::scale(model, glm::vec3(scale, 1.0f));
+	model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
+	model = glm::translate(model, glm::vec3(pos, 1.0f));
 
 	return proj * view * model;
 }
