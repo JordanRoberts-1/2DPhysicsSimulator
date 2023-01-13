@@ -17,7 +17,7 @@ public:
 private:
 	void SetupImGui(Window* window);
 	void CreateContext();
-	void Update(float dt);
+	void Update();
 private:
 	double m_Prev, m_Lag;
 	const double MS_PER_UPDATE = 8.8888888;

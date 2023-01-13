@@ -108,7 +108,7 @@ void Application::Run(Window* window, Renderer* renderer)
 		//Keep constant update time regardless of rendering speed
 		while (m_Lag >= MS_PER_UPDATE)
 		{
-			Update(elapsed);
+			Update();
 
 			m_Lag -= MS_PER_UPDATE;
 		}
@@ -119,9 +119,9 @@ void Application::Run(Window* window, Renderer* renderer)
 	}
 }
 
-void Application::Update(float dt)
+void Application::Update()
 {
-	Systems::ProcessKinematics(dt);
+	Systems::ProcessKinematics();
 }
 
 void Application::Cleanup()

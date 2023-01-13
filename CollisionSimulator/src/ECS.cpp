@@ -2,7 +2,7 @@
 
 namespace Systems
 {
-	void ProcessKinematics(float dt)
+	void ProcessKinematics()
 	{
 		constexpr Tag rqdTags = CompTags::Position | CompTags::Velocity;
 		for (Entity e = 0; e < AppData::numEntities; e++)

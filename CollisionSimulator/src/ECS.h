@@ -49,6 +49,6 @@ namespace AppData
 }
 
 namespace Systems{
-	void ProcessKinematics(float dt);
+	void ProcessKinematics();
 }
 
