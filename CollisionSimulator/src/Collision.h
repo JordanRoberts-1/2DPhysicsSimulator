@@ -43,7 +43,7 @@ std::array<glm::vec2, 4> CreateAxis(const std::array<glm::vec2, 4>& A, const std
 	return result;
 }
 
-std::array<glm::vec2, 4> ProjectPointsOntoAxis(glm::vec2 axis, const std::array<glm::vec2, 4>& points)
+std::array<glm::vec2, 4> ProjectPointsOntoAxis(const glm::vec2& axis, const std::array<glm::vec2, 4>& points)
 {
 	std::array<glm::vec2, 4> pointsProjected{};
 	for (uint32_t i = 0; i < points.size(); i++)
