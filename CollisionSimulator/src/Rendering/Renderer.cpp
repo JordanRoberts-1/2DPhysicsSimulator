@@ -76,7 +76,7 @@ void Renderer::RenderGeometry(Window* window)
 
 	//Set up the View and Projection matrices
 	glm::mat4 proj = glm::ortho(-window->getWindowWidth(), window->getWindowWidth(), -window->getWindowHeight(), window->getWindowHeight(), -1.0f, 1.0f);
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f));
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f));
 	
 	//Loop through each entity and add them to cpu-side vertex buffer
 	int renderableCount = 0;
@@ -161,9 +161,9 @@ glm::mat4 Renderer::CreateMVP(const Entity& e, glm::mat4& proj, glm::mat4& view)
 	float rotation = AppData::rotations[e];
 
 	glm::mat4 model(1.0f);
-	model = glm::scale(model, glm::vec3(scale, 1.0f));
-	model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
 	model = glm::translate(model, glm::vec3(pos, 1.0f));
+	model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 0.0f, -1.0f));
+	model = glm::scale(model, glm::vec3(scale, 1.0f));
 
 	return proj * view * model;
 }
