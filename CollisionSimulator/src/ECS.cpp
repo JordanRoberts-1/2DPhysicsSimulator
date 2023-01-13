@@ -4,16 +4,19 @@ namespace Systems
 {
 	void ProcessKinematics()
 	{
-		constexpr Tag rqdTags = CompTags::Position | CompTags::Velocity;
+		constexpr Tag rqdTags = CompTags::Position | CompTags::Rigidbody;
 		for (Entity e = 0; e < AppData::numEntities; e++)
 		{
 			if ((AppData::tags[e] & rqdTags) != rqdTags) { continue; }
-			Acceleration& a = AppData::accelerations[e];
-			Velocity& v = AppData::velocities[e];
+			Rigidbody& rb = AppData::rigidbodies[e];
+			glm::vec2& acceleration = rb.acceleration;
+			glm::vec2& velocity = rb.velocity;
 			Position& p = AppData::positions[(int)e];
 
-			v += a;
-			p += v;
+			velocity += acceleration;
+			p += velocity;
+		}
+	}
 		}
 	}
 }
