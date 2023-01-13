@@ -10,8 +10,14 @@
 #include "Window.h"
 #include "Rendering/Renderer.h"
 #include "Scene.h"
+#include "ECS.h"
 #include "Util/Debug.h"
 #include "Util/Clock.h"
+
+Application::Application()
+	: m_Prev(Clock::CurrTimeInMillis()), m_Lag(0.0)
+{
+}
 
 int Application::Start()
 {
@@ -84,8 +90,10 @@ void Application::CreateContext()
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 }
 
+
 void Application::Run(Window* window, Renderer* renderer)
 {
+	m_Prev = Clock::CurrTimeInMillis();
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window->getGLFWWindow()))
 	{
@@ -100,7 +108,7 @@ void Application::Run(Window* window, Renderer* renderer)
 		//Keep constant update time regardless of rendering speed
 		while (m_Lag >= MS_PER_UPDATE)
 		{
-			//Update();
+			Update(elapsed);
 
 			m_Lag -= MS_PER_UPDATE;
 		}
@@ -109,6 +117,11 @@ void Application::Run(Window* window, Renderer* renderer)
 		renderer->CreateRenderingUI(elapsed);
 		renderer->Render(window);
 	}
+}
+
+void Application::Update(float dt)
+{
+	Systems::ProcessKinematics(dt);
 }
 
 void Application::Cleanup()

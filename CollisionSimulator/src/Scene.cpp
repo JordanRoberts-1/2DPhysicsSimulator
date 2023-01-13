@@ -10,7 +10,7 @@ void SceneManager::CreateScene()
 	for (size_t i = 0; i < 100; i++)
 	{
 		AddEntity(CompTags::Position | CompTags::Scale | CompTags::Rotation | 
-			CompTags::Velocity | CompTags::Collider | CompTags::Renderable);
+			CompTags::Velocity | CompTags::Acceleration | CompTags::Collider | CompTags::Renderable);
 	}
 }
 
@@ -22,12 +22,16 @@ void SceneManager::AddEntity(Tag tag)
 		return;
 	}
 
-	AppData::tags[AppData::numEntities] = tag;
-	AppData::positions[AppData::numEntities] = glm::vec2(-480.0f) + glm::vec2(AppData::numEntities * 5);
-	AppData::scales[AppData::numEntities] = glm::vec2(100.0f);
-	AppData::rotations[AppData::numEntities] = (float)AppData::numEntities;
+	uint32_t currentIndex = AppData::numEntities;
+	AppData::tags[currentIndex] = tag;
+	AppData::positions[currentIndex] = glm::vec2(-480.0f) + glm::vec2(currentIndex * 5);
+	AppData::scales[currentIndex] = glm::vec2(100.0f);
+	AppData::rotations[currentIndex] = (float)currentIndex;
 
-	AppData::renderables[AppData::numEntities].color = glm::vec4(AppData::numEntities /100.0f, AppData::numEntities, AppData::numEntities /100.0f, AppData::numEntities);
+	AppData::renderables[currentIndex].color = glm::vec4(currentIndex /100.0f, currentIndex, currentIndex /100.0f, currentIndex);
+
+	AppData::velocities[currentIndex] = glm::vec2(0.0f, -(float)currentIndex/100.0f);
+	AppData::accelerations[currentIndex] = glm::vec2(0.0f, -(float)currentIndex / 1000.0f);
 
 	AppData::numEntities++;
 }
