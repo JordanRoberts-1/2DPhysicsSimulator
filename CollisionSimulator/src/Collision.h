@@ -6,7 +6,7 @@
 #include "ECS.h"
 #include <iostream>
 
-std::array<glm::vec2, 4> GetQuadCornersFromCenterAndRotation(glm::vec2 center, glm::vec2 scale, float rotationDegrees)
+std::array<glm::vec2, 4> GetQuadCornersFromCenterAndRotation(const glm::vec2& center, const glm::vec2& scale, float rotationDegrees)
 {
 	//from: https://stackoverflow.com/questions/41898990/find-corners-of-a-rotated-rectangle-given-its-center-point-and-rotation
 	std::array<glm::vec2, 4> result;
