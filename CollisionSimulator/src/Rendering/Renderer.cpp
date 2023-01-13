@@ -75,7 +75,7 @@ void Renderer::RenderGeometry(Window* window)
 	m_Indices.clear();
 
 	//Set up the View and Projection matrices
-	glm::mat4 proj = glm::ortho(-window->getWindowHeight(), window->getWindowHeight(), -window->getWindowWidth(), window->getWindowHeight(), -1.0f, 1.0f);
+	glm::mat4 proj = glm::ortho(-window->getWindowWidth(), window->getWindowWidth(), -window->getWindowHeight(), window->getWindowHeight(), -1.0f, 1.0f);
 	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f));
 	
 	//Loop through each entity and add them to cpu-side vertex buffer
