@@ -136,19 +136,19 @@ std::array<Vertex, 4> Renderer::CreateVertices(const Entity& e)
 {
 	std::array<Vertex, 4> result;
 	result[0] = {
-		glm::vec2(0.0f, 0.0f),
+		glm::vec2(-0.5f, -0.5f),
 		AppData::renderables[e].color,
 		(float)e };
 	result[1] = {
-		glm::vec2(1.0f, 0.0f),
+		glm::vec2(0.5f, -0.5f),
 		AppData::renderables[e].color,
 		(float)e };
 	result[2] = {
-		glm::vec2(1.0f, 1.0f),
+		glm::vec2(0.5f, 0.5f),
 		AppData::renderables[e].color,
 		(float)e };
 	result[3] = {
-		glm::vec2(0.0f, 1.0f),
+		glm::vec2(-0.5f, 0.5f),
 		AppData::renderables[e].color,
 		(float)e };
 	return result;
