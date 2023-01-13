@@ -54,7 +54,7 @@ std::array<glm::vec2, 4> ProjectPointsOntoAxis(glm::vec2 axis, const std::array<
 	{
 		float dotProduct = (glm::dot(points[i], axis));
 		float axisMag = glm::length(axis);
-		float axisMagSquared = axisMag;
+		float axisMagSquared = axisMag * axisMag;
 		pointsProjected[i].x = (dotProduct * axis.x) / axisMagSquared;
 		pointsProjected[i].y = (dotProduct * axis.y) / axisMagSquared;
 	}
