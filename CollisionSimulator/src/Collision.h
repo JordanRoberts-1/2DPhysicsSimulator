@@ -105,9 +105,9 @@ namespace Systems
 
 			Collider& colliderA = AppData::colliders[entityA];
 
-			glm::vec2 posA = AppData::positions[entityA];
-			glm::vec2 scaleA = AppData::scales[entityA];
-			float rotA = AppData::rotations[entityA];
+			const glm::vec2& posA = AppData::positions[entityA];
+			const glm::vec2& scaleA = AppData::scales[entityA];
+			const float& rotA = AppData::rotations[entityA];
 			std::array<glm::vec2, 4> cornersA = GetQuadCornersFromCenterAndRotation(posA, scaleA, rotA);
 
 			for (Entity entityB = entityA + 1; entityB < AppData::numEntities; entityB++)
@@ -117,9 +117,9 @@ namespace Systems
 
 				Collider& colliderB = AppData::colliders[entityB];
 
-				glm::vec2 posB = AppData::positions[entityB];
-				glm::vec2 scaleB = AppData::scales[entityB];
-				float rotB = AppData::rotations[entityB];
+				const glm::vec2& posB = AppData::positions[entityB];
+				const glm::vec2& scaleB = AppData::scales[entityB];
+				const float& rotB = AppData::rotations[entityB];
 				std::array<glm::vec2, 4> cornersB = GetQuadCornersFromCenterAndRotation(posB, scaleB, rotB);
 
 				if (colliderA.type == Collider::BOX && colliderB.type == Collider::BOX)
