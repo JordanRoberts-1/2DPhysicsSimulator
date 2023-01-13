@@ -35,15 +35,11 @@ std::array<glm::vec2, 4> GetQuadCornersFromCenterAndRotation(glm::vec2 center, g
 std::array<glm::vec2, 4> CreateAxis(const std::array<glm::vec2, 4>& A, const std::array<glm::vec2, 4>& B)
 {
 	std::array<glm::vec2, 4> result;
-	result[0].x = A[3].x - A[2].x;
-	result[0].y = A[3].y - A[2].y;
-	result[1].x = A[3].x - A[1].x;
-	result[1].y = A[3].y - A[1].y;
+	result[0] = A[3] - A[2];
+	result[1] = A[3] - A[1];
 
-	result[2].x = B[2].x - B[0].x;
-	result[2].y = B[2].y - B[0].y;
-	result[3].x = B[2].x - B[3].x;
-	result[3].y = B[2].y - B[3].y;
+	result[2] = B[2] - B[0];
+	result[3] = B[2] - B[3];
 	return result;
 }
 
