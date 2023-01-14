@@ -35,11 +35,11 @@ std::array<glm::vec2, 4> GetQuadCornersFromCenterAndRotation(const glm::vec2& ce
 std::array<glm::vec2, 4> CreateAxis(const std::array<glm::vec2, 4>& A, const std::array<glm::vec2, 4>& B)
 {
 	std::array<glm::vec2, 4> result;
-	result[0] = A[3] - A[2];
-	result[1] = A[3] - A[1];
+	result[0] = glm::normalize(A[3] - A[2]);
+	result[1] = glm::normalize(A[3] - A[1]);
 
-	result[2] = B[2] - B[0];
-	result[3] = B[2] - B[3];
+	result[2] = glm::normalize(B[2] - B[0]);
+	result[3] = glm::normalize(B[2] - B[3]);
 	return result;
 }
 
@@ -58,9 +58,10 @@ std::array<glm::vec2, 4> ProjectPointsOntoAxis(const glm::vec2& axis, const std:
 	return pointsProjected;
 }
 
-bool BoxBoxCollisionDetection(const std::array<glm::vec2, 4>& A, const std::array<glm::vec2, 4>& B)
+std::tuple<bool, float> BoxBoxCollisionDetection(const std::array<glm::vec2, 4>& A, const std::array<glm::vec2, 4>& B)
 {
 	std::array<glm::vec2, 4> axisToCheck = CreateAxis(A, B);
+	float minOverlap = std::numeric_limits<float>::infinity();
 	for (uint32_t i = 0; i < axisToCheck.size(); i++)
 	{
 		std::array<glm::vec2, 4> projectionOntoAxisA = ProjectPointsOntoAxis(axisToCheck[i], A);
@@ -79,12 +80,13 @@ bool BoxBoxCollisionDetection(const std::array<glm::vec2, 4>& A, const std::arra
 
 		const auto& [minA, maxA] = std::minmax_element(scalarProjectionsA.begin(), scalarProjectionsA.end());
 		const auto& [minB, maxB] = std::minmax_element(scalarProjectionsB.begin(), scalarProjectionsB.end());
+		minOverlap = std::min(std::min(*maxA, *maxB) - std::max(*minA, *minB), minOverlap);
 		if (*minB > *maxA || *maxB < *minA)
 		{
-			return false;
+			return { false, std::numeric_limits<float>::infinity() };
 		}
 	}
-	return true;
+	return { true, minOverlap };
 }
 
 namespace Systems
@@ -101,7 +103,7 @@ namespace Systems
 
 			Collider& colliderA = AppData::colliders[entityA];
 
-			const glm::vec2& posA = AppData::positions[entityA];
+			glm::vec2& posA = AppData::positions[entityA];
 			const glm::vec2& scaleA = AppData::scales[entityA];
 			const float& rotA = AppData::rotations[entityA];
 			std::array<glm::vec2, 4> cornersA = GetQuadCornersFromCenterAndRotation(posA, scaleA, rotA);
@@ -113,16 +115,18 @@ namespace Systems
 
 				Collider& colliderB = AppData::colliders[entityB];
 
-				const glm::vec2& posB = AppData::positions[entityB];
+				glm::vec2& posB = AppData::positions[entityB];
 				const glm::vec2& scaleB = AppData::scales[entityB];
 				const float& rotB = AppData::rotations[entityB];
 				std::array<glm::vec2, 4> cornersB = GetQuadCornersFromCenterAndRotation(posB, scaleB, rotB);
 
 				if (colliderA.type == Collider::BOX && colliderB.type == Collider::BOX)
 				{
-					bool collision = BoxBoxCollisionDetection(cornersA, cornersB);
-					if (collision)
+					const auto& [bCollision, overlap] = BoxBoxCollisionDetection(cornersA, cornersB);
+					if (bCollision)
 					{
+						glm::vec2 directionToOtherCenter = glm::normalize(posB - posA);
+						posA = posA - (overlap * directionToOtherCenter);
 						std::cout << "Collision occurred! " << std::endl;
 					}
 				}
