@@ -58,10 +58,11 @@ std::array<glm::vec2, 4> ProjectPointsOntoAxis(const glm::vec2& axis, const std:
 	return pointsProjected;
 }
 
-std::tuple<bool, float> BoxBoxCollisionDetection(const std::array<glm::vec2, 4>& A, const std::array<glm::vec2, 4>& B)
+std::tuple<bool, float, glm::vec2> BoxBoxCollisionDetection(const std::array<glm::vec2, 4>& A, const std::array<glm::vec2, 4>& B)
 {
 	std::array<glm::vec2, 4> axisToCheck = CreateAxis(A, B);
 	float minOverlap = std::numeric_limits<float>::infinity();
+	glm::vec2 minAxis = glm::vec2(std::numeric_limits<float>::infinity());
 	for (uint32_t i = 0; i < axisToCheck.size(); i++)
 	{
 		std::array<glm::vec2, 4> projectionOntoAxisA = ProjectPointsOntoAxis(axisToCheck[i], A);
@@ -80,13 +81,45 @@ std::tuple<bool, float> BoxBoxCollisionDetection(const std::array<glm::vec2, 4>&
 
 		const auto& [minA, maxA] = std::minmax_element(scalarProjectionsA.begin(), scalarProjectionsA.end());
 		const auto& [minB, maxB] = std::minmax_element(scalarProjectionsB.begin(), scalarProjectionsB.end());
-		minOverlap = std::min(std::min(*maxA, *maxB) - std::max(*minA, *minB), minOverlap);
+
+		//These objects do not overlap on this axis, therefore, they CANNOT intersect, so return
 		if (*minB > *maxA || *maxB < *minA)
 		{
-			return { false, std::numeric_limits<float>::infinity() };
+			return { false, minOverlap, minAxis };
+		}
+
+		float overlap = std::min(*maxA, *maxB) - std::max(*minA, *minB);
+		if (overlap < minOverlap)
+		{
+			minOverlap = overlap;
+			minAxis = axisToCheck[i];
 		}
 	}
-	return { true, minOverlap };
+	return { true, minOverlap, minAxis };
+}
+
+void ResolveCollision(Entity entityA, Entity entityB, glm::vec2 collisionNormal, float overlap)
+{
+	Rigidbody& rbA = AppData::rigidbodies[entityA];
+	Rigidbody& rbB = AppData::rigidbodies[entityB];
+
+	float restitution = std::min(rbA.restitution, rbB.restitution);
+
+	glm::vec2 velocityA = rbA.velocity;
+	glm::vec2 velocityB = rbB.velocity;
+	glm::vec2 relativeVelocity = velocityB - velocityA;
+	float velAlongNormal = glm::dot(relativeVelocity, collisionNormal);
+
+	if (velAlongNormal > 0)
+		return;
+
+	float impulseMag = -(1 + restitution) * velAlongNormal;
+	impulseMag /= rbA.invMass + rbB.invMass;
+
+	glm::vec2 impulse = impulseMag * collisionNormal;
+	rbA.velocity -= rbA.invMass * impulse;
+	rbB.velocity += rbB.invMass * impulse;
+
 }
 
 namespace Systems
@@ -122,12 +155,12 @@ namespace Systems
 
 				if (colliderA.type == Collider::BOX && colliderB.type == Collider::BOX)
 				{
-					const auto& [bCollision, overlap] = BoxBoxCollisionDetection(cornersA, cornersB);
+					const auto& [bCollision, overlap, collisionNormal] = BoxBoxCollisionDetection(cornersA, cornersB);
 					if (bCollision)
 					{
 						glm::vec2 directionToOtherCenter = glm::normalize(posB - posA);
-						posA = posA - (overlap * directionToOtherCenter);
-						std::cout << "Collision occurred! " << std::endl;
+						ResolveCollision(entityA, entityB, collisionNormal, overlap);
+						std::cout << "Collision occurred! between " << entityA << " and " << entityB << std::endl;
 					}
 				}
 			}

@@ -47,7 +47,7 @@ void SceneManager::CreateSceneUI()
 	if (ImGui::Button("Add Entity"))
 	{
 		AddEntity((CompTags::TransformTagShortcut |
-			CompTags::Collider | CompTags::Renderable | CompTags::Renderable));
+			CompTags::Collider | CompTags::Renderable | CompTags::Rigidbody));
 	}
 	ImGui::End();
 }
