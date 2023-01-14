@@ -105,30 +105,39 @@ void ResolveCollision(Entity entityA, Entity entityB, const glm::vec2& collision
 	Position& posA = AppData::positions[entityA];
 	Position& posB = AppData::positions[entityB];
 
+	glm::vec2 displacement = posB - posA;
+	glm::vec2 n = collisionNormal;
 
-	float restitution = std::min(rbA.restitution, rbB.restitution);
+	//Flip the normal if it doesn't go from A -> B (this is because of the order of collision detecting)
+	if (glm::dot(displacement, n) < 0.0f)
+	{
+		n *= -1.0f;
+	}
 
 	glm::vec2 relativeVelocity = rbB.velocity - rbA.velocity;
-	glm::vec2 displacement = posB - posA;
 	float movingTowards = glm::dot(relativeVelocity, displacement);
-	float velAlongNormal = glm::dot(relativeVelocity, collisionNormal);
+	float velAlongNormal = glm::dot(relativeVelocity, n);
 
-	if (movingTowards > 0)
+	//If they are moving away, then don't do anything
+	if (velAlongNormal > 0)
 		return;
 
+	float restitution = std::min(rbA.restitution, rbB.restitution);
 	float impulseMag = -(1 + restitution) * velAlongNormal;
 	impulseMag /= rbA.invMass + rbB.invMass;
 
-	glm::vec2 impulse = impulseMag * collisionNormal;
+	//Apply the impulse
+	glm::vec2 impulse = impulseMag * n;
 	rbA.velocity -= rbA.invMass * impulse;
 	rbB.velocity += rbB.invMass * impulse;
 
-	const float percent = 0.2; // usually 20% to 80% 
-	const float slop = 0.01;// usually 0.01 to 0.1 
+	//Position correction to stop sinking and jittering
+	const float percent = 0.8f; // usually 20% to 80% 
+	const float slop = 0.1f;// usually 0.01 to 0.1 
 	glm::vec2 correction = std::max(overlap - slop, 0.0f) 
-		/ (rbA.invMass + rbB.invMass) * percent * collisionNormal;
+		/ (rbA.invMass + rbB.invMass) * percent * n;
 	AppData::positions[entityA] -= rbA.invMass * correction;
-	AppData::positions[entityB] -= rbB.invMass * correction;
+	AppData::positions[entityB] += rbB.invMass * correction;
 }
 
 namespace Systems
