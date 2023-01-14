@@ -98,19 +98,22 @@ std::tuple<bool, float, glm::vec2> BoxBoxCollisionDetection(const std::array<glm
 	return { true, minOverlap, minAxis };
 }
 
-void ResolveCollision(Entity entityA, Entity entityB, glm::vec2 collisionNormal, float overlap)
+void ResolveCollision(Entity entityA, Entity entityB, const glm::vec2& collisionNormal, float overlap)
 {
 	Rigidbody& rbA = AppData::rigidbodies[entityA];
 	Rigidbody& rbB = AppData::rigidbodies[entityB];
+	Position& posA = AppData::positions[entityA];
+	Position& posB = AppData::positions[entityB];
+
 
 	float restitution = std::min(rbA.restitution, rbB.restitution);
 
-	glm::vec2 velocityA = rbA.velocity;
-	glm::vec2 velocityB = rbB.velocity;
-	glm::vec2 relativeVelocity = velocityB - velocityA;
+	glm::vec2 relativeVelocity = rbB.velocity - rbA.velocity;
+	glm::vec2 displacement = posB - posA;
+	float movingTowards = glm::dot(relativeVelocity, displacement);
 	float velAlongNormal = glm::dot(relativeVelocity, collisionNormal);
 
-	if (velAlongNormal > 0)
+	if (movingTowards > 0)
 		return;
 
 	float impulseMag = -(1 + restitution) * velAlongNormal;
@@ -120,6 +123,12 @@ void ResolveCollision(Entity entityA, Entity entityB, glm::vec2 collisionNormal,
 	rbA.velocity -= rbA.invMass * impulse;
 	rbB.velocity += rbB.invMass * impulse;
 
+	const float percent = 0.2; // usually 20% to 80% 
+	const float slop = 0.01;// usually 0.01 to 0.1 
+	glm::vec2 correction = std::max(overlap - slop, 0.0f) 
+		/ (rbA.invMass + rbB.invMass) * percent * collisionNormal;
+	AppData::positions[entityA] -= rbA.invMass * correction;
+	AppData::positions[entityB] -= rbB.invMass * correction;
 }
 
 namespace Systems
@@ -158,9 +167,7 @@ namespace Systems
 					const auto& [bCollision, overlap, collisionNormal] = BoxBoxCollisionDetection(cornersA, cornersB);
 					if (bCollision)
 					{
-						glm::vec2 directionToOtherCenter = glm::normalize(posB - posA);
 						ResolveCollision(entityA, entityB, collisionNormal, overlap);
-						std::cout << "Collision occurred! between " << entityA << " and " << entityB << std::endl;
 					}
 				}
 			}

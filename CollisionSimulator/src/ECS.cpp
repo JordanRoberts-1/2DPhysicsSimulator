@@ -2,6 +2,16 @@
 
 namespace Systems
 {
+	//Helper system to set rotation as they need to wrap
+	void SetRotation(Entity e, float rotationDegrees)
+	{
+		Rotation& rotation = AppData::rotations[e];
+		rotation = std::fmod(rotationDegrees + 180, 360);
+		if (rotation < 0)
+			rotation += 360;
+		rotation -= 180;
+	}
+
 	void ProcessKinematics()
 	{
 		constexpr Tag rqdTags = CompTags::Position | CompTags::Rigidbody;

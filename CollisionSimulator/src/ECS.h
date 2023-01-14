@@ -57,6 +57,8 @@ namespace AppData
 }
 
 namespace Systems{
+	void SetRotation(Entity e, float rotationDegrees);
+
 	void ProcessKinematics();
 	void ProcessCollisionDetection();
 }
