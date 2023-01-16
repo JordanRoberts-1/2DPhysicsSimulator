@@ -57,6 +57,7 @@
     <ClInclude Include="src\Util\Debug.h" />
     <ClInclude Include="src\Util\Input.h" />
     <ClInclude Include="src\Util\Random.h" />
+    <ClInclude Include="src\Util\Util.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="vendor\ImGUI\imconfig.h" />
     <ClInclude Include="vendor\ImGUI\imgui.h" />

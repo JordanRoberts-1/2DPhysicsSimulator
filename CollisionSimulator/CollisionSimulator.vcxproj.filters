@@ -110,6 +110,9 @@
     <ClInclude Include="src\Rendering\ShaderStorageBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Util\Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Shaders\Basic.glsl" />

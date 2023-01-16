@@ -25,6 +25,9 @@ namespace Systems
 
 			velocity += acceleration;
 			p += velocity;
+			
+			Rotation& rot = AppData::rotations[e];
+			SetRotation(e, (rot + rb.angularVelocity) * ROTATIONAL_DRAG);
 		}
 	}
 }

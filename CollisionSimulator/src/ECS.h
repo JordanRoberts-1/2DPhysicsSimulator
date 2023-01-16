@@ -5,6 +5,8 @@
 
 #include "glm/glm.hpp"
 
+const float ROTATIONAL_DRAG = 1.0f;
+
 using Entity = uint32_t;
 using Position = glm::vec2;
 using Scale = glm::vec2;
@@ -24,8 +26,10 @@ struct Rigidbody
 {
 	glm::vec2 velocity;
 	glm::vec2 acceleration;
+	float angularVelocity;
 	float invMass;
 	float restitution;
+	bool staticAngular;
 };
 
 
@@ -41,7 +45,7 @@ namespace CompTags
 	constexpr Tag TransformTagShortcut = CompTags::Position | CompTags::Scale | CompTags::Rotation;
 }
 
-constexpr int MAX_ENTS = 1000;
+constexpr int MAX_ENTS = 3000;
 
 namespace AppData
 {

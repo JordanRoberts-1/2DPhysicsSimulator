@@ -17,9 +17,8 @@ void SceneManager::CreateScene()
 
 void SceneManager::AddEntity(Tag tag)
 {
-	if(AppData::numEntities >= AppData::tags.size())
+	if(AppData::numEntities >= MAX_ENTS)
 	{
-		std::cerr << "ENTITIES FULL, CAN'T ADD ANYMORE" << std::endl;
 		return;
 	}
 
@@ -42,12 +41,15 @@ void SceneManager::AddEntity(Tag tag)
 void SceneManager::CreateSceneUI()
 {
 	ImGui::Begin("Scene Statistics");
-	ImGui::Text("MAX Entities: %d", MAX_ENTS);
-	ImGui::Text("Number of Entities: %d", AppData::numEntities);
+	ImGui::Text("Number of Entities: %d/%d", AppData::numEntities, MAX_ENTS);
 	if (ImGui::Button("Add Entity"))
 	{
+		for (int i = 0; i < 500; i++)
+		{
+
 		AddEntity((CompTags::TransformTagShortcut |
 			CompTags::Collider | CompTags::Renderable | CompTags::Rigidbody));
+		}
 	}
 	ImGui::End();
 }
