@@ -6,7 +6,7 @@
 #include "glm/glm.hpp"
 
 
-constexpr int MAX_ENTS = 500;
+constexpr int MAX_ENTS = 700;
 const float DRAG = 0.01f;
 const float ROTATIONAL_DRAG = 0.1f;
 
