@@ -5,7 +5,8 @@
 
 #include "glm/glm.hpp"
 
-const float ROTATIONAL_DRAG = 1.0f;
+const float DRAG = 0.01f;
+const float ROTATIONAL_DRAG = 0.1f;
 
 using Entity = uint32_t;
 using Position = glm::vec2;
@@ -30,6 +31,7 @@ struct Rigidbody
 	float invMass;
 	float restitution;
 	bool staticAngular;
+	float invMoment;
 };
 
 

@@ -130,15 +130,15 @@ float Cross(const glm::vec2& vec1, const glm::vec2& vec2)
 }
 
 glm::vec2 CalculateImpulse(const Rigidbody& rbA, const Rigidbody& rbB, const glm::vec2& rA, const glm::vec2& rB, const glm::vec2& collisionNormal,
-	const float& momentOfInertiaA, const float& momentOfInertiaB)
+	const float& invMomentA, const float& invMomentB)
 {
 	float restitution = std::min(rbA.restitution, rbB.restitution);
 	float rACrossNormal = Cross(rA, collisionNormal);
 	float rBCrossNormal = Cross(rB, collisionNormal);
 	float coeffRest = -1 - restitution;
 	float numerator = coeffRest * glm::dot((rbA.velocity - rbB.velocity), collisionNormal);
-	float denomA = ((rACrossNormal) / momentOfInertiaA) * rACrossNormal;
-	float denomB = ((rBCrossNormal) / momentOfInertiaB) * rBCrossNormal;
+	float denomA = ((rACrossNormal) * invMomentA) * rACrossNormal;
+	float denomB = ((rBCrossNormal) * invMomentB) * rBCrossNormal;
 	float denominator = rbA.invMass + rbB.invMass +
 		denomA + denomB;
 
@@ -148,8 +148,13 @@ glm::vec2 CalculateImpulse(const Rigidbody& rbA, const Rigidbody& rbB, const glm
 
 void ResolveCollision(Entity entityA, Entity entityB, glm::vec2& collisionNormal, float overlap, const glm::vec2& collisionPoint)
 {
+
 	Rigidbody& rbA = AppData::rigidbodies[entityA];
 	Rigidbody& rbB = AppData::rigidbodies[entityB];
+
+	//If they are both static, then don't resolve the collision
+	if (rbA.invMass == 0.0f && rbB.invMass == 0.0f && rbA.invMoment == 0.0f && rbB.invMoment == 0.0f)
+		return;
 
 	Position& posA = AppData::positions[entityA];
 	Position& posB = AppData::positions[entityB];
@@ -169,10 +174,11 @@ void ResolveCollision(Entity entityA, Entity entityB, glm::vec2& collisionNormal
 	glm::vec2 rB = collisionPoint - posB;
 	const glm::vec2& scaleA = AppData::scales[entityA];
 	const glm::vec2& scaleB = AppData::scales[entityB];
-	float momentOfInertiaA = std::pow(scaleA.x, 3) * scaleA.y / 12;
-	float momentOfInertiaB = std::pow(scaleB.x, 3) * scaleB.y / 12;
 
-	glm::vec2 J = CalculateImpulse(rbA, rbB, rA, rB, collisionNormal, momentOfInertiaA, momentOfInertiaB);
+	float invMomentA = rbA.invMoment;
+	float invMomentB = rbB.invMoment;
+
+	glm::vec2 J = CalculateImpulse(rbA, rbB, rA, rB, collisionNormal, invMomentA, invMomentB);
 
 	//Apply impulse
 	rbA.velocity += rbA.invMass * J;
@@ -180,16 +186,16 @@ void ResolveCollision(Entity entityA, Entity entityB, glm::vec2& collisionNormal
 	
 	if (!rbA.staticAngular)
 	{
-		rbA.angularVelocity -= (Cross(rA, J) / momentOfInertiaA) * (180.0f / std::numbers::pi);
+		rbA.angularVelocity -= (Cross(rA, J) * invMomentA) * (180.0f / std::numbers::pi);
 	}
 	if (!rbB.staticAngular)
 	{
-		rbB.angularVelocity += (Cross(rB, J) / momentOfInertiaB) * (180.0f / std::numbers::pi);
+		rbB.angularVelocity += (Cross(rB, J) * invMomentB) * (180.0f / std::numbers::pi);
 	}
 
 	//Positional correction to fix sinking and jittering
-	const float percent = 0.8f; // usually 20% to 80% 
-	const float slop = 0.1f;// usually 0.01 to 0.1 
+	const float percent = 0.1f; // usually 20% to 80% 
+	const float slop = 0.02f;// usually 0.01 to 0.1 
 	glm::vec2 correction = std::max(overlap - slop, 0.0f) 
 		/ (rbA.invMass + rbB.invMass) * percent * collisionNormal;
 	AppData::positions[entityA] -= rbA.invMass * correction;

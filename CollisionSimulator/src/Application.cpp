@@ -51,7 +51,7 @@ std::unique_ptr<Window> Application::Setup()
 	//Set up the glfw version and other window hints
 	CreateContext();
 
-	std::unique_ptr<Window> window = std::make_unique<Window>("2D Physics Simulation", 960, 540);
+	std::unique_ptr<Window> window = std::make_unique<Window>("2D Physics Simulation", 1920, 1080);
 
 	//Turn on v-sync
 	glfwSwapInterval(0);

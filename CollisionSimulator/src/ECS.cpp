@@ -24,10 +24,12 @@ namespace Systems
 			Position& p = AppData::positions[(int)e];
 
 			velocity += acceleration;
+			velocity *= std::exp(-DRAG);
 			p += velocity;
 			
 			Rotation& rot = AppData::rotations[e];
-			SetRotation(e, (rot + rb.angularVelocity) * ROTATIONAL_DRAG);
+			rb.angularVelocity *= std::exp(-ROTATIONAL_DRAG);
+			SetRotation(e, (rot + rb.angularVelocity));
 		}
 	}
 }

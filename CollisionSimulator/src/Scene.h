@@ -8,7 +8,8 @@ class SceneManager
 {
 public:
 	static void CreateScene();
-	static void AddEntity(Tag tag);
+	static int AddSquare();
+	static int AddEntity(Tag tag);
 	static void CreateSceneUI();
 };
 
