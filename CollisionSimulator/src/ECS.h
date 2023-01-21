@@ -5,6 +5,8 @@
 
 #include "glm/glm.hpp"
 
+
+constexpr int MAX_ENTS = 500;
 const float DRAG = 0.01f;
 const float ROTATIONAL_DRAG = 0.1f;
 
@@ -46,8 +48,6 @@ namespace CompTags
 	constexpr Tag Rigidbody = 0x1 << 5;
 	constexpr Tag TransformTagShortcut = CompTags::Position | CompTags::Scale | CompTags::Rotation;
 }
-
-constexpr int MAX_ENTS = 3000;
 
 namespace AppData
 {

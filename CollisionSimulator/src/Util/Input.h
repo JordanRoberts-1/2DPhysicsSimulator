@@ -2,9 +2,10 @@
 
 struct GLFWwindow;
 
-class InputManager
+namespace Input
 {
-public:
-	static void Callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-private:
-};
+	void CursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
+	void MouseClickedCallback(GLFWwindow* window, int button, int action, int mods);
+
+	inline bool s_MouseHeld = false;
+}

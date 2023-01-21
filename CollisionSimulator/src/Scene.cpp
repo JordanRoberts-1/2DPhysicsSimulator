@@ -1,9 +1,10 @@
 #include "Scene.h"
 
 #include <iostream>
+#include <ImGUI/imgui.h>
 
 #include "ECS.h"
-#include <ImGUI/imgui.h>
+#include "Util/Input.h"
 
 void SceneManager::CreateScene()
 {
@@ -178,7 +179,7 @@ void SceneManager::CreateSceneUI()
 {
 	ImGui::Begin("Scene Statistics");
 	ImGui::Text("Number of Entities: %d/%d", AppData::numEntities, MAX_ENTS);
-	if (ImGui::Button("Add Entity"))
+	if (ImGui::Button("Add 200 entities"))
 	{
 		for (int i = 0; i < 200; i++)
 		{
@@ -186,4 +187,16 @@ void SceneManager::CreateSceneUI()
 		}
 	}
 	ImGui::End();
+}
+
+void SceneManager::SceneUpdate()
+{
+	if (Input::s_MouseHeld)
+	{
+		int square = AddSquare();
+		if (square == -1)
+			return;
+
+		AppData::positions[square] = glm::vec2(AppData::cursorX, AppData::cursorY);
+	}
 }

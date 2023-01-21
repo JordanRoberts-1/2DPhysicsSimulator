@@ -13,6 +13,7 @@
 #include "ECS.h"
 #include "Util/Debug.h"
 #include "Util/Clock.h"
+#include "Util/Input.h"
 
 Application::Application()
 	: m_Prev(Clock::CurrTimeInMillis()), m_Lag(0.0)
@@ -51,9 +52,9 @@ std::unique_ptr<Window> Application::Setup()
 	//Set up the glfw version and other window hints
 	CreateContext();
 
-	std::unique_ptr<Window> window = std::make_unique<Window>("2D Physics Simulation", 1920, 1080);
+	std::unique_ptr<Window> window = std::make_unique<Window>("2D Physics Simulation");
 
-	//Turn on v-sync
+	//Turn off v-sync
 	glfwSwapInterval(0);
 
 	//Initialize glew and check for error
@@ -67,8 +68,13 @@ std::unique_ptr<Window> Application::Setup()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	//Setup input callbacks
+	glfwSetCursorPosCallback(window->getGLFWWindow(), Input::CursorPositionCallback);
+	glfwSetMouseButtonCallback(window->getGLFWWindow(), Input::MouseClickedCallback);
+
 	SetupImGui(window.get());
 	Debug::SetupDebug();
+
 
 	return window;
 }
@@ -123,6 +129,7 @@ void Application::Update()
 {
 	Systems::ProcessKinematics();
 	Systems::ProcessCollisionDetection();
+	SceneManager::SceneUpdate();
 }
 
 void Application::Cleanup()
