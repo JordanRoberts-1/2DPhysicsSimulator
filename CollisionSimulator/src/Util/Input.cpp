@@ -6,6 +6,7 @@
 
 #include "../Scene.h"
 #include "../Window.h"
+#include <ImGUI/imgui.h>
 
 namespace Input
 {
@@ -17,16 +18,21 @@ namespace Input
 
 	void MouseClickedCallback(GLFWwindow* window, int button, int action, int mods)
 	{
+		ImGuiIO& io = ImGui::GetIO();
 
-		if (button == GLFW_MOUSE_BUTTON_LEFT)
+		//only use data if ImGUI doesn't need it
+		if (!io.WantCaptureMouse)
 		{
-			if (action == GLFW_PRESS)
+			if (button == GLFW_MOUSE_BUTTON_LEFT)
 			{
-				s_MouseHeld = true;
-			}
-			else if (action == GLFW_RELEASE)
-			{
-				s_MouseHeld = false;
+				if (action == GLFW_PRESS)
+				{
+					s_MouseHeld = true;
+				}
+				else if (action == GLFW_RELEASE)
+				{
+					s_MouseHeld = false;
+				}
 			}
 		}
 	}
