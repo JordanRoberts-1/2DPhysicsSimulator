@@ -194,8 +194,8 @@ void ResolveCollision(Entity entityA, Entity entityB, glm::vec2& collisionNormal
 	}
 
 	//Positional correction to fix sinking and jittering
-	const float percent = 0.3f; // usually 20% to 80% 
-	const float slop = 0.05f;// usually 0.01 to 0.1 
+	const float percent = 0.2f; // usually 20% to 80% 
+	const float slop = 0.1f;// usually 0.01 to 0.1 
 	glm::vec2 correction = std::max(overlap - slop, 0.0f) 
 		/ (rbA.invMass + rbB.invMass) * percent * collisionNormal;
 	AppData::positions[entityA] -= rbA.invMass * correction;

@@ -189,11 +189,11 @@ void SceneManager::CreateSceneUI()
 
 	if (ImGui::Button("Clear Scene"))
 	{
-		AppData::tags = {0};
+		AppData::tags = {};
 		AppData::numEntities = 0;
-		AppData::positions = { glm::vec2(0.0f)};
-		AppData::scales = {glm::vec2(0.0f)};
-		AppData::rotations = {0.0f};
+		AppData::positions = {};
+		AppData::scales = {};
+		AppData::rotations = {};
 		AppData::colliders = {};
 		AppData::renderables = {};
 		AppData::rigidbodies = {};
